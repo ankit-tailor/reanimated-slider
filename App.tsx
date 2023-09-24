@@ -6,7 +6,6 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  withTiming,
 } from "react-native-reanimated";
 import {
   Gesture,
@@ -38,33 +37,34 @@ const Slider = () => {
 
   const pan = Gesture.Pan()
     .onUpdate((event) => {
+      const translationY = event.translationY;
       if (
         onLeft.value &&
-        Math.abs(event.translationY) <= wrapperHeight.value / 2 - 28
+        Math.abs(translationY) <= wrapperHeight.value / 2 - 28
       ) {
-        opacityValue.value = Math.abs(event.translationY) / 100;
-        offsetY.value = event.translationY;
+        opacityValue.value = Math.abs(translationY) / 100;
+        offsetY.value = translationY;
       }
 
-      if (Math.abs(event.translationY) <= wrapperHeight.value / 2) {
-        if (event.translationY < 0) {
-          if (wrapperHeight.value + event.translationY * 2.5 < 0) {
+      if (Math.abs(translationY) <= wrapperHeight.value / 2) {
+        if (translationY < 0) {
+          if (wrapperHeight.value + translationY * 2.5 < 0) {
             bottomValue.value = 0;
           } else {
-            bottomValue.value = wrapperHeight.value + event.translationY * 2.5;
+            bottomValue.value = wrapperHeight.value + translationY * 2.5;
           }
           topValue.value = 0;
         } else {
-          if (wrapperHeight.value - event.translationY * 2.5 < 0) {
+          if (wrapperHeight.value - translationY * 2.5 < 0) {
             topValue.value = 0;
           } else {
-            topValue.value = wrapperHeight.value - event.translationY * 2.5;
+            topValue.value = wrapperHeight.value - translationY * 2.5;
           }
           bottomValue.value = 0;
         }
       }
     })
-    .onEnd((event) => {
+    .onEnd(() => {
       offsetY.value = withSpring(0, {
         mass: 11,
         damping: 10,
@@ -91,16 +91,7 @@ const Slider = () => {
   }));
 
   return (
-    <View
-      onLayout={getWrapperHeight}
-      style={{
-        backgroundColor: "#44403c",
-        height: "40%",
-        borderRadius: 999,
-        paddingHorizontal: 8,
-        // paddingVertical: 4,
-      }}
-    >
+    <View onLayout={getWrapperHeight} style={styles.slider}>
       <AnimatedLinearGradient
         colors={["#4A90E2", "#F76D57"]}
         start={[0, 0]}
@@ -115,16 +106,7 @@ const Slider = () => {
       />
       <View onLayout={onLayout} style={styles.wrapper}>
         <GestureDetector gesture={pan}>
-          <Animated.View
-            style={[
-              {
-                borderRadius: 999,
-                backgroundColor: "white",
-                padding: 22,
-              },
-              animatedStyles,
-            ]}
-          />
+          <Animated.View style={[styles.ball, animatedStyles]} />
         </GestureDetector>
       </View>
     </View>
@@ -153,8 +135,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  box: {
-    padding: 32,
-    backgroundColor: "red",
+  slider: {
+    backgroundColor: "#292524",
+    height: "40%",
+    borderRadius: 999,
+    paddingHorizontal: 8,
+  },
+  ball: {
+    borderRadius: 999,
+    backgroundColor: "white",
+    padding: 22,
   },
 });
