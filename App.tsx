@@ -91,7 +91,7 @@ const Slider = () => {
   }));
 
   return (
-    <View onLayout={getWrapperHeight} style={styles.slider}>
+    <View onLayout={getWrapperHeight} style={styles.sliderTrack}>
       <AnimatedLinearGradient
         colors={["#4A90E2", "#F76D57"]}
         start={[0, 0]}
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  slider: {
+  sliderTrack: {
     backgroundColor: "#292524",
     height: "40%",
     borderRadius: 999,
